@@ -5,7 +5,7 @@ on: [push, pull_request]
 jobs:
   build:
     name: "Lint and Deploy"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     env:
       TERM: xterm-256color
       BATECT_CACHE_TYPE: directory

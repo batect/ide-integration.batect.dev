@@ -99,7 +99,7 @@ resource "google_monitoring_alert_policy" "api_config_schema_endpoint" {
     display_name = "Uptime Health Check on API (/v1/configSchema.json)"
 
     condition_threshold {
-      filter          = "metric.type=\"monitoring.googleapis.com/uptime_check/check_passed\" resource.type=\"uptime_url\" metric.label.check_id=\"${google_monitoring_uptime_check_config.api_latest_update_endpoint.uptime_check_id}\""
+      filter          = "metric.type=\"monitoring.googleapis.com/uptime_check/check_passed\" resource.type=\"uptime_url\" metric.label.check_id=\"${google_monitoring_uptime_check_config.api_config_schema_endpoint.uptime_check_id}\""
       comparison      = "COMPARISON_GT"
       duration        = "300s"
       threshold_value = 1
