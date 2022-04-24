@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v1
 
       - name: Validate Batect wrapper scripts
-        uses: batect/batect-wrapper-validation-action@v0.2.0
+        uses: batect/batect-wrapper-validation-action@v0.3.0
 
       - name: Cache Batect
         uses: actions/cache@v1
