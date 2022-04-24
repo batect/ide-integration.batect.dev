@@ -1,0 +1,70 @@
+{
+  "extends": [
+    "github>batect/renovate-config:default"
+  ],
+  "packageRules": [
+    {
+      "matchManagers": [
+        "batect",
+        "batect-wrapper",
+        "dockerfile"
+      ],
+      "automerge": true
+    },
+    {
+      "matchManagers": ["regex"],
+      "matchPackageNames": ["gcr.io/google.com/cloudsdktool/cloud-sdk"],
+      "commitMessageTopic": "gcloud",
+      "commitMessageExtra": "to {{#if isSingleVersion}}v{{{newVersion}}}{{else}}{{{newValue}}}{{/if}}",
+      "additionalBranchPrefix": "",
+      "branchTopic": "gcloud-{{{newMajor}}}.{{{newMinor}}}"
+    },
+    {
+      "matchManagers": ["terraform"],
+      "stabilityDays": 1,
+      "prCreation": "not-pending"
+    },
+    {
+      "matchManagers": ["regex"],
+      "matchPackageNames": ["hashicorp/terraform"],
+      "extractVersion": "^v(?<version>.*)$",
+      "fileMatch": ["(^|/)Dockerfile$"]
+    },
+    {
+      "matchManagers": ["terraform"],
+      "matchPackageNames": ["google", "google-beta"],
+      "groupName": "Google Terraform providers"
+    }
+  ],
+  "regexManagers": [
+    {
+      "fileMatch": [
+        "(^|/)Dockerfile$"
+      ],
+      "matchStrings": [
+        "ENV CLOUD_SDK_VERSION=(?<currentValue>\\d+\\.\\d+\\.\\d+)"
+      ],
+      "depNameTemplate": "gcr.io/google.com/cloudsdktool/cloud-sdk",
+      "datasourceTemplate": "docker"
+    },
+    {
+      "fileMatch": [
+        "(^|/)Dockerfile$"
+      ],
+      "matchStrings": [
+        "ENV TERRAFORM_VERSION=(?<currentValue>\\d+\\.\\d+\\.\\d+)"
+      ],
+      "depNameTemplate": "hashicorp/terraform",
+      "datasourceTemplate": "github-releases"
+    },
+    {
+      "fileMatch": [
+        "(^|/)Dockerfile$"
+      ],
+      "matchStrings": [
+        "RUN npm install -g (?<depName>[a-zA-Z0-9_-]+)@(?<currentValue>\\d+\\.\\d+\\.\\d+)"
+      ],
+      "datasourceTemplate": "npm"
+    }
+  ]
+}
