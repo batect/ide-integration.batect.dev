@@ -8,7 +8,7 @@ RUN apk add --no-cache \
     ncurses \
     python3
 
-ARG TERRAFORM_VERSION=0.13.4
+ARG TERRAFORM_VERSION=0.15.5
 ADD https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip /tmp/terraform.zip
 RUN unzip /tmp/terraform.zip -d /usr/local/bin && rm /tmp/terraform.zip
 
