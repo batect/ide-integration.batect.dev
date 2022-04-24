@@ -6,7 +6,7 @@ rem For more information, visit https://github.com/batect/batect.
 
 setlocal EnableDelayedExpansion
 
-set "version=0.64.2"
+set "version=0.79.0"
 
 if "%BATECT_CACHE_DIR%" == "" (
     set "BATECT_CACHE_DIR=%USERPROFILE%\.batect\cache"
@@ -22,7 +22,7 @@ $ErrorActionPreference = 'Stop'^
 
 ^
 
-$Version='0.64.2'^
+$Version='0.79.0'^
 
 ^
 
@@ -42,13 +42,13 @@ function getValueOrDefault($value, $default) {^
 
 ^
 
-$DownloadUrlRoot = getValueOrDefault $env:BATECT_DOWNLOAD_URL_ROOT "https://dl.bintray.com/batect/batect"^
+$DownloadUrlRoot = getValueOrDefault $env:BATECT_DOWNLOAD_URL_ROOT "https://updates.batect.dev/v1/files"^
 
 $UrlEncodedVersion = [Uri]::EscapeDataString($Version)^
 
-$DownloadUrl = getValueOrDefault $env:BATECT_DOWNLOAD_URL "$DownloadUrlRoot/$UrlEncodedVersion/bin/batect-$UrlEncodedVersion.jar"^
+$DownloadUrl = getValueOrDefault $env:BATECT_DOWNLOAD_URL "$DownloadUrlRoot/$UrlEncodedVersion/batect-$UrlEncodedVersion.jar"^
 
-$ExpectedChecksum = getValueOrDefault $env:BATECT_DOWNLOAD_CHECKSUM 'c441a488c3fed477e3a2545d0f6ceea9bd99aa448528024009ebf1d13aea80ba'^
+$ExpectedChecksum = getValueOrDefault $env:BATECT_DOWNLOAD_CHECKSUM 'bbf4e2351c7289cb0033f7153bc6ec3d06a37a37565700f7295c55962cd55221'^
 
 ^
 
@@ -228,7 +228,37 @@ function runApplication() {^
 
 ^
 
+function useJavaHome() {^
+
+    return ($env:JAVA_HOME -ne $null)^
+
+}^
+
+^
+
 function findJava() {^
+
+    if (useJavaHome) {^
+
+        $java = Get-Command "$env:JAVA_HOME\bin\java" -ErrorAction SilentlyContinue^
+
+^
+
+        if ($java -eq $null) {^
+
+            Write-Host -ForegroundColor Red "JAVA_HOME is set to '$env:JAVA_HOME', but there is no Java executable at '$env:JAVA_HOME\bin\java.exe'."^
+
+            exit 1^
+
+        }^
+
+^
+
+        return $java^
+
+    }^
+
+^
 
     $java = Get-Command "java" -ErrorAction SilentlyContinue^
 
@@ -264,9 +294,23 @@ function checkJavaVersion([System.Management.Automation.CommandInfo]$java) {^
 
     if ($parsedVersion -lt (New-Object Version -ArgumentList $minimumVersion)) {^
 
-        Write-Host -ForegroundColor Red "The version of Java that is available on your PATH is version $rawVersion, but version $minimumVersion or greater is required."^
+        if (useJavaHome) {^
 
-        Write-Host -ForegroundColor Red "If you have a newer version of Java installed, please make sure your PATH is set correctly."^
+            Write-Host -ForegroundColor Red "The version of Java that is available in JAVA_HOME is version $rawVersion, but version $minimumVersion or greater is required."^
+
+            Write-Host -ForegroundColor Red "If you have a newer version of Java installed, please make sure JAVA_HOME is set correctly."^
+
+            Write-Host -ForegroundColor Red "JAVA_HOME takes precedence over any versions of Java available on your PATH."^
+
+        } else {^
+
+            Write-Host -ForegroundColor Red "The version of Java that is available on your PATH is version $rawVersion, but version $minimumVersion or greater is required."^
+
+            Write-Host -ForegroundColor Red "If you have a newer version of Java installed, please make sure your PATH is set correctly."^
+
+        }^
+
+^
 
         exit 1^
 
@@ -276,9 +320,23 @@ function checkJavaVersion([System.Management.Automation.CommandInfo]$java) {^
 
     if (-not ($versionInfo -match "64\-[bB]it")) {^
 
-        Write-Host -ForegroundColor Red "The version of Java that is available on your PATH is a 32-bit version, but Batect requires a 64-bit Java runtime."^
+        if (useJavaHome) {^
 
-        Write-Host -ForegroundColor Red "If you have a 64-bit version of Java installed, please make sure your PATH is set correctly."^
+            Write-Host -ForegroundColor Red "The version of Java that is available in JAVA_HOME is a 32-bit version, but Batect requires a 64-bit Java runtime."^
+
+            Write-Host -ForegroundColor Red "If you have a 64-bit version of Java installed, please make sure JAVA_HOME is set correctly."^
+
+            Write-Host -ForegroundColor Red "JAVA_HOME takes precedence over any versions of Java available on your PATH."^
+
+        } else {^
+
+            Write-Host -ForegroundColor Red "The version of Java that is available on your PATH is a 32-bit version, but Batect requires a 64-bit Java runtime."^
+
+            Write-Host -ForegroundColor Red "If you have a 64-bit version of Java installed, please make sure your PATH is set correctly."^
+
+        }^
+
+^
 
         exit 1^
 
@@ -386,7 +444,9 @@ function escapeArgument([String]$argument) {^
 
 ^
 
-main @args
+main @args^
+
+
 
 if not exist "%cacheDir%" (
     mkdir "%cacheDir%"
