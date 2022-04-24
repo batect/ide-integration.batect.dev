@@ -43,7 +43,7 @@
         "(^|/)Dockerfile$"
       ],
       "matchStrings": [
-        "ENV CLOUD_SDK_VERSION=(?<currentValue>\\d+\\.\\d+\\.\\d+)"
+        "ARG CLOUD_SDK_VERSION=(?<currentValue>\\d+\\.\\d+\\.\\d+)"
       ],
       "depNameTemplate": "gcr.io/google.com/cloudsdktool/cloud-sdk",
       "datasourceTemplate": "docker"
@@ -53,7 +53,7 @@
         "(^|/)Dockerfile$"
       ],
       "matchStrings": [
-        "ENV TERRAFORM_VERSION=(?<currentValue>\\d+\\.\\d+\\.\\d+)"
+        "ARG TERRAFORM_VERSION=(?<currentValue>\\d+\\.\\d+\\.\\d+)"
       ],
       "depNameTemplate": "hashicorp/terraform",
       "datasourceTemplate": "github-releases"
