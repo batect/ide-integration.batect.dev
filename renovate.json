@@ -30,11 +30,6 @@
       "matchPackageNames": ["hashicorp/terraform"],
       "extractVersion": "^v(?<version>.*)$",
       "fileMatch": ["(^|/)Dockerfile$"]
-    },
-    {
-      "matchManagers": ["terraform"],
-      "matchPackageNames": ["google", "google-beta"],
-      "groupName": "Google Terraform providers"
     }
   ],
   "regexManagers": [
