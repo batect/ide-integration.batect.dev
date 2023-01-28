@@ -3,6 +3,10 @@ addEventListener('fetch', event => {
 });
 
 async function handleRequest(request) {
+    const userAgent = request.headers.get('User-Agent');
+    const forwardedFor = request.headers.get('X-Forwarded-For');
+    console.log(`Processing request: HTTP ${request.method} ${request.url}, user agent is "${userAgent}", forwarded for is ${forwardedFor}`)
+
     if (request.method !== "GET") {
         return new Response("Method not allowed", { status: 405 });
     }
