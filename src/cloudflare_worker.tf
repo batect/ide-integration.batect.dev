@@ -35,7 +35,7 @@ resource "cloudflare_worker_script" "rewrite" {
 }
 
 resource "cloudflare_worker_route" "rewrite" {
-  for_each = local.paths
+  for_each = toset(local.paths)
 
   zone_id     = local.cloudflare_zone_id
   pattern     = "${local.domain_name}${each.value}"
