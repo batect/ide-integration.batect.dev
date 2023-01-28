@@ -26,11 +26,6 @@ locals {
 resource "cloudflare_worker_script" "rewrite" {
   name    = "ide_integration_rewrite"
   content = file("worker.js")
-
-  analytics_engine_binding {
-    name    = "ANALYTICS"
-    dataset = "ide-integration-analytics"
-  }
 }
 
 resource "cloudflare_worker_route" "rewrite" {

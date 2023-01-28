@@ -3,11 +3,6 @@ addEventListener('fetch', event => {
 });
 
 async function handleRequest(request) {
-    env.ANALYTICS.writeDataPoint({
-        'blobs': [request.method, request.url, request.headers.get('User-Agent'), request.headers.get('X-Forwarded-For')],
-        'doubles': [1],
-    });
-
     if (request.method !== "GET") {
         return new Response("Method not allowed", { status: 405 });
     }
