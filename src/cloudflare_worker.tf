@@ -21,6 +21,12 @@ locals {
   # We can't look this up with a data resource without giving access to all zones in the Cloudflare account :sadface:
   cloudflare_zone_id = "b285aeea52df6b888cdee6d2551ebd32"
   domain_name        = "ide-integration.batect.dev"
+
+  paths = [
+    "/v1/configSchema.json",
+    "/ping",
+    "/"
+  ]
 }
 
 resource "cloudflare_worker_script" "rewrite" {
@@ -29,8 +35,10 @@ resource "cloudflare_worker_script" "rewrite" {
 }
 
 resource "cloudflare_worker_route" "rewrite" {
+  for_each = local.paths
+
   zone_id     = local.cloudflare_zone_id
-  pattern     = "${local.domain_name}/*"
+  pattern     = "${local.domain_name}${each.value}"
   script_name = cloudflare_worker_script.rewrite.name
 }
 

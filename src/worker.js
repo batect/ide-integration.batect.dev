@@ -19,6 +19,7 @@ async function handleRequest(request) {
 }
 
 async function getResponse(request) {
+    // Note that these routes must be kept in sync with the paths in cloudflare_worker.tf
     if (request.url === 'https://ide-integration.batect.dev/v1/configSchema.json') {
         return await fetch(new Request('https://storage.googleapis.com/batect-ide-integration-prod-public/v1/configSchema.json'));
     } else if (request.url === 'https://ide-integration.batect.dev/ping') {
