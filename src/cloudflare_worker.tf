@@ -18,6 +18,8 @@
 // limitations under the License and the Condition.
 
 locals {
+  cloudflare_account_id = "4d106699f468851a1f005ce8ae96ba5a"
+
   # We can't look this up with a data resource without giving access to all zones in the Cloudflare account :sadface:
   cloudflare_zone_id = "b285aeea52df6b888cdee6d2551ebd32"
   domain_name        = "ide-integration.batect.dev"
@@ -30,8 +32,9 @@ locals {
 }
 
 resource "cloudflare_worker_script" "rewrite" {
-  name    = "ide_integration_rewrite"
-  content = file("worker.js")
+  name       = "ide_integration_rewrite"
+  content    = file("worker.js")
+  account_id = local.cloudflare_account_id
 }
 
 resource "cloudflare_worker_route" "rewrite" {
