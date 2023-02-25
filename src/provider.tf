@@ -34,7 +34,7 @@ terraform {
 }
 
 provider "cloudflare" {
-  api_token  = trimspace(file("${path.module}/../.creds/cloudflare_key"))
+  api_token = trimspace(file("${path.module}/../.creds/cloudflare_key"))
 }
 
 provider "google" {
